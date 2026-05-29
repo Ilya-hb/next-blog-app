@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getBlogs, searchBlog } from "../services/blogs";
 import React from "react";
 
@@ -24,15 +25,15 @@ const Blogs = async ({
         {blogs.map((blog) => (
           <React.Fragment key={blog.id}>
             <li >
-              <h2>{blog.title}</h2>
+              <Link href={`/blogs/${blog.id}`}>{blog.title}</Link>
               <p>Author: {blog.author}</p>
-              <a
+              <Link
                 href={blog.url}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 Read more
-              </a>
+              </Link>
               <p>Likes: {blog.likes} ❤️ </p>
             </li>
             <hr />

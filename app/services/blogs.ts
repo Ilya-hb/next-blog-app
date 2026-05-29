@@ -1,23 +1,17 @@
-import { get } from "http"
+import { eq, like } from 'drizzle-orm';
+import { db } from '../../db'
+import { blogs } from '@/db/schema';
 
-const blogs = [
-  {id:1, title:'test blog 1',  author:'ilya', url:'https://example.com/blog1', likes: 10, },
-  {id:2, title:'test blog 2', author:'ilya', url:'https://example.com/blog2', likes: 15, },
-  {id:3, title:'test blog 3', author:'ilya', url:'https://example.com/blog3', likes: 5, },
-]
-
-let nextId = 4
-
-export const getBlogs = () => {
-  return blogs
+export const getBlogs = async () => {
+  return await db.query.blogs.findMany();
 }
 
-export const addBlog = ( title: string, author: string, url: string) => {
-  blogs.push({ id: nextId++, title, author, url, likes: 0 })
+export const addBlog = async (title: string, author: string, url: string) => {
+  await db.insert(blogs).values({ title, author, url });
 }
-export const getBlogById = (id: number) =>{
-    return blogs.find(b=>b.id === id)
+export const getBlogById = async (id: number) => {
+  return await db.query.blogs.findFirst({ where: eq(blogs.id, id) })
 }
-export const searchBlog = (query:string)=>{
-    return blogs.filter((b)=>b.title.toLowerCase().includes(query?.toLowerCase() || ''))
+export const searchBlog = async (query: string) => {
+  return await db.query.blogs.findMany({ where: like(blogs.title, `%${query}%`) })
 }
